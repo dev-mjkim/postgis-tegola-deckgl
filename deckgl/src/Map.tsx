@@ -29,7 +29,7 @@ export default function Map() {
           },
           layers: [{ id: "osm", type: "raster", source: "osm" }],
         },
-        center: [127.0, 37.5], // 서울 중심 (데이터에 맞게 수정)
+        center: [77.219462,28.632871], // 서울 중심 (데이터에 맞게 수정)
         zoom: 13,
         pitch: 60,
         bearing: 0,
@@ -50,7 +50,7 @@ export default function Map() {
               f.properties?.h_top5_avg ??
               f.properties?.h_mean ??
               30,
-            getFillColor: [255, 105, 180, 220],
+            getFillColor: [0, 0, 180, 220],
             getLineColor: [80, 80, 80],
             extruded: true,
             pickable: true,

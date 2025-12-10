@@ -275,6 +275,13 @@ docker rmi tegola_deckgl-postgis 2>/dev/null || true
 
 ---
 
+### Map.tsx 를 수정하고나서
+```
+docker restart deckgl_frontend
+```
+ 
+실행해서 브라우저 새로고침하세연.
+
 ### DB 내부에서 데이터 수정하기
 
 #### 1. DB 접근
