@@ -275,3 +275,23 @@ docker rmi tegola_deckgl-postgis 2>/dev/null || true
 | PostGIS | 25432 | PostgreSQL 데이터베이스 |
 | Tegola  | 28080 | 벡터타일 서버           |
 | DeckGL  | 4000  | 프론트엔드 (Vite)       |
+
+---
+
+### DB 내부에서 데이터 수정하기
+
+#### 1. DB 접근
+
+```
+docker exec -it tegola_postgis psql -U gisuser -d gis
+```
+
+#### 2. 원하는 데이터 변경하기
+
+예시)
+
+```
+UPDATE 테이블이름
+SET height = 180
+WHERE id = 1;
+```
