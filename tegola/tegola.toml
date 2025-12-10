@@ -1,0 +1,34 @@
+[webserver]
+port = ":8080"
+
+# --- 일단 캐시는 안쓸게요 ---
+# [cache]
+# type="file"
+# basepath="/tmp/tiles"
+
+[webserver.headers]
+Cache-Control = "s-maxage=3600"
+
+# --- 데이터베이스 연결 설정 ---
+[[providers]]
+name = "buildings_provider"
+type = "mvt_postgis"
+uri = "postgresql://gisuser:gispw@postgis:5432/gis?sslmode=disable"
+srid = 3857
+
+[[providers.layers]]
+  name = "buildings_layer"
+  geometry_fieldname = "geom"
+  geometry_type = "multipolygon"
+  id_fieldname = "ogc_fid"
+  sql = "SELECT ST_AsMVTGeom(geom, !BBOX!) AS geom, ogc_fid, height FROM buildings WHERE geom && !BBOX!"
+
+# =================================================================
+[[maps]]
+name = "seoul_buildings"
+center = [ 125.97636703341452, 38.99386735331924, 12.0] 
+
+  # 줌 레벨 15-20: 'buildings_layer' 사용
+  [[maps.layers]]
+    provider_layer = "buildings_provider.buildings_layer"
+    name = "buildings" # 클라이언트가 바라볼 레이어 이름은 모두 'buildings'로 통일

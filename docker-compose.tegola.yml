@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  tegola:
+    image: gospatial/tegola:latest
+    container_name: tegola_server
+    restart: unless-stopped
+    ports:
+      - "28080:8080"
+    volumes:
+      - ./tegola/tegola.toml:/opt/tegola/config.toml:ro
+      - ./tegola/tiles:/tmp/tiles
+    command: serve --config /opt/tegola/config.toml
+    networks:
+      - tegola_net
+
+networks:
+  tegola_net:
+    name: tegola_network
+    external: true

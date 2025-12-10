@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  postgis:
+    build:
+      context: ./postgis
+      dockerfile: Dockerfile
+    container_name: tegola_postgis
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: gisuser
+      POSTGRES_PASSWORD: gispw
+      POSTGRES_DB: gis
+    ports:
+      - "25432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./geojson:/geojson:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gisuser -d gis"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tegola_net
+
+volumes:
+  postgis_data:
+    driver: local
+
+networks:
+  tegola_net:
+    name: tegola_network
+    driver: bridge
