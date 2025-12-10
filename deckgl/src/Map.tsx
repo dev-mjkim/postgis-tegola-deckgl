@@ -50,12 +50,19 @@ export default function Map() {
               f.properties?.h_top5_avg ??
               f.properties?.h_mean ??
               30,
-            getFillColor: [0, 0, 180, 220],
+            getFillColor: [255, 100, 180, 220],
             getLineColor: [80, 80, 80],
             extruded: true,
             pickable: true,
             autoHighlight: true,
             highlightColor: [255, 255, 0],
+            onClick: (info) => {
+              if (info.object) {
+                console.log("@@@ Clicked on:", info.object);
+              } else {
+                console.log("Clicked empty space");
+              }
+            },
           }),
         ],
       });

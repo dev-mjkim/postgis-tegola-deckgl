@@ -295,7 +295,7 @@ docker exec -it tegola_postgis psql -U gisuser -d gis
 예시)
 
 ```
-UPDATE 테이블이름
-SET height = 180
-WHERE id = 1;
+UPDATE buildings
+SET height = 500
+WHERE ogc_fid = 4527;
 ```
