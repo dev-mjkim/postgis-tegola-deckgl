@@ -8,9 +8,9 @@ services:
     ports:
       - "28080:8080"
     volumes:
-      - ./tegola/tegola.toml:/opt/tegola/config.toml:ro
+      - ./tegola:/tegola:ro
       - ./tegola/tiles:/tmp/tiles
-    command: serve --config /opt/tegola/config.toml
+    command: serve --config /tegola/tegola.toml
     networks:
       - tegola_net
 
