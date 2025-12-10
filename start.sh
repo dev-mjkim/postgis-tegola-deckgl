@@ -18,16 +18,16 @@ echo -e "${BLUE}  GeoJSON → PostGIS → Tegola 시작${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
-# GeoJSON 파일 찾기
-GEOJSON_FILE=$(find ./geojson -name "*.geojson" -o -name "*.json" 2>/dev/null | head -1)
+# GeoJSON 파일 확인
+GEOJSON_FILE="./geojson/buildings.geojson"
 
-if [ -z "$GEOJSON_FILE" ]; then
-    echo -e "${RED}❌ 오류: geojson/ 폴더에 GeoJSON 파일이 없습니다.${NC}"
-    echo -e "${YELLOW}   geojson/ 폴더에 .geojson 또는 .json 파일을 넣어주세요.${NC}"
+if [ ! -f "$GEOJSON_FILE" ]; then
+    echo -e "${RED}❌ 오류: geojson/buildings.geojson 파일이 없습니다.${NC}"
+    echo -e "${YELLOW}   geojson/ 폴더에 buildings.geojson 파일을 넣어주세요.${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}✓ GeoJSON 파일 발견: ${GEOJSON_FILE}${NC}"
+echo -e "${GREEN}✓ GeoJSON 파일 확인: ${GEOJSON_FILE}${NC}"
 echo ""
 
 # Step 1: PostGIS 실행
@@ -48,17 +48,17 @@ echo ""
 # 추가 대기 (PostGIS 확장 로드)
 sleep 3
 
-# Step 3: GeoJSON 데이터 넣기
+# Step 3: GeoJSON 데이터 넣기 (컨테이너 내부에서 실행)
 echo -e "${BLUE}[Step 3/4] GeoJSON 데이터를 DB에 넣는 중...${NC}"
 
 # 기존 테이블 삭제 (있으면)
 docker exec tegola_postgis psql -U gisuser -d gis -c "DROP TABLE IF EXISTS buildings;" > /dev/null 2>&1 || true
 
-# ogr2ogr로 데이터 임포트
-ogr2ogr \
+# 컨테이너 내부에서 ogr2ogr 실행 (geojson 폴더가 /geojson으로 마운트됨)
+docker exec tegola_postgis ogr2ogr \
     -f "PostgreSQL" \
-    PG:"host=localhost port=25432 user=gisuser dbname=gis password=gispw" \
-    "$GEOJSON_FILE" \
+    PG:"host=localhost port=5432 user=gisuser dbname=gis password=gispw" \
+    /geojson/buildings.geojson \
     -nln buildings \
     -a_srs EPSG:3857 \
     -nlt MULTIPOLYGON \
@@ -90,4 +90,3 @@ echo -e "     ${YELLOW}cd deckgl && npm install && npm run dev${NC}"
 echo ""
 echo -e "  🌐 브라우저에서: ${YELLOW}http://localhost:4000${NC}"
 echo ""
-

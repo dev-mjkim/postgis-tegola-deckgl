@@ -14,9 +14,6 @@ GeoJSON 빌딩 데이터를 3D로 시각화하는 파이프라인입니다.
 ## 📋 사전 요구사항
 
 - Docker & Docker Compose
-- GDAL (`ogr2ogr` 명령어 사용) - [설치 가이드](https://gdal.org/download.html)
-  - macOS: `brew install gdal`
-  - Ubuntu: `sudo apt install gdal-bin`
 - Node.js (DeckGL 프론트엔드용) - [설치 가이드](https://nodejs.org/)
   - macOS: `brew install node`
   - Ubuntu: `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs`
@@ -26,15 +23,21 @@ GeoJSON 빌딩 데이터를 3D로 시각화하는 파이프라인입니다.
 
 ## 📁 GeoJSON 데이터 준비
 
-`geojson/` 폴더에 GeoJSON 파일을 넣어주세요.
+`geojson/` 폴더에 **`buildings.geojson`** 파일을 넣어주세요.
+
+```
+geojson/
+└── buildings.geojson   ← 이 파일명으로 저장!
+```
 
 ### 필수 조건
 
-| 항목      | 값                           |
-| --------- | ---------------------------- |
-| 좌표계    | **EPSG:3857** (Web Mercator) |
-| Geometry  | MultiPolygon 또는 Polygon    |
-| 높이 속성 | `height` (미터 단위)         |
+| 항목      | 값                             |
+| --------- | ------------------------------ |
+| 파일명    | **`buildings.geojson`** (고정) |
+| 좌표계    | **EPSG:3857** (Web Mercator)   |
+| Geometry  | MultiPolygon 또는 Polygon      |
+| 높이 속성 | `height` (미터 단위)           |
 
 ### 예시 GeoJSON 구조
 
@@ -123,10 +126,14 @@ docker exec -it tegola_postgis psql -U gisuser -d gis
 ### Step 2. GeoJSON 데이터를 DB에 넣기
 
 ```bash
-ogr2ogr \
+# 기존 테이블 삭제 (있으면)
+docker exec tegola_postgis psql -U gisuser -d gis -c "DROP TABLE IF EXISTS buildings;"
+
+# 컨테이너 내부에서 ogr2ogr 실행
+docker exec tegola_postgis ogr2ogr \
   -f "PostgreSQL" \
-  PG:"host=localhost port=25432 user=gisuser dbname=gis password=gispw" \
-  ./geojson/buildings.geojson \
+  PG:"host=localhost port=5432 user=gisuser dbname=gis password=gispw" \
+  /geojson/buildings.geojson \
   -nln buildings \
   -a_srs EPSG:3857 \
   -nlt MULTIPOLYGON \
@@ -134,11 +141,7 @@ ogr2ogr \
   -skipfailures
 ```
 
-> 📌 파일명이 다르면 `./geojson/buildings.geojson` 부분을 수정하세요.
-
-> 📌 한글 인코딩이 깨지면 `--config SHAPE_ENCODING EUC-KR` 옵션을 맨 앞에 추가하세요.
-
-> 📌 `Database 내부에 접근하기` 단계에서 배운 테이블 데이터 확인하기로 데이터가 잘 들어갔는지 확인해보세요.
+> 📌 데이터가 잘 들어갔는지 확인해보세요:
 
 ```bash
 # 컨테이너 내부 psql 접속 (한 줄로)
