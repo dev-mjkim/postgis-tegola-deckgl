@@ -13,11 +13,7 @@ GeoJSON 빌딩 데이터를 3D로 시각화하는 파이프라인입니다.
 
 ## 📋 사전 요구사항
 
-- Docker & Docker Compose
-- Node.js (DeckGL 프론트엔드용) - [설치 가이드](https://nodejs.org/)
-  - macOS: `brew install node`
-  - Ubuntu: `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs`
-  - 또는 [nvm](https://github.com/nvm-sh/nvm) 사용 추천
+- **Docker & Docker Compose** - 이것만 있으면 됩니다! 🐳
 
 ---
 
@@ -79,13 +75,11 @@ GeoJSON 파일을 `geojson/` 폴더에 넣고 스크립트만 실행하면 끝!
 start.bat
 ```
 
-> 스크립트가 자동으로: DB 실행 → 데이터 임포트 → Tegola 실행까지 처리합니다.
+> 스크립트가 자동으로: DB 실행 → 데이터 임포트 → Tegola 실행 → DeckGL 실행까지 모두 처리합니다!
 >
-> 이후 DeckGL만 직접 실행하면 됩니다:
+> 완료되면 http://localhost:4000 에서 3D 빌딩을 볼 수 있습니다.
 >
-> ```bash
-> cd deckgl && npm install && npm run dev
-> ```
+> 💡 `deckgl/src/Map.tsx` 파일을 수정하면 자동으로 반영됩니다 (핫리로드)
 
 ### 종료 및 전체 삭제
 

@@ -13,11 +13,5 @@ export default defineConfig({
   server: {
     port: 4000,
     open: true,
-    proxy: {
-      "/tiles": {
-        target: "http://localhost:8080",
-        changeOrigin: true,
-      },
-    },
   },
 });

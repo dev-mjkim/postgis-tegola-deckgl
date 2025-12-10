@@ -14,16 +14,20 @@ echo -e "${BLUE}  모든 서비스 종료 중...${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
+# DeckGL 종료
+echo -e "${BLUE}[1/4] DeckGL 종료...${NC}"
+docker compose -f docker-compose.deckgl.yml down -v 2>/dev/null || true
+
 # Tegola 종료
-echo -e "${BLUE}[1/3] Tegola 종료...${NC}"
+echo -e "${BLUE}[2/4] Tegola 종료...${NC}"
 docker compose -f docker-compose.tegola.yml down -v 2>/dev/null || true
 
 # PostGIS 종료
-echo -e "${BLUE}[2/3] PostGIS 종료...${NC}"
+echo -e "${BLUE}[3/4] PostGIS 종료...${NC}"
 docker compose -f docker-compose.db.yml down -v 2>/dev/null || true
 
 # 네트워크 삭제
-echo -e "${BLUE}[3/3] Docker 네트워크 정리...${NC}"
+echo -e "${BLUE}[4/4] Docker 네트워크 정리...${NC}"
 docker network rm tegola_network 2>/dev/null || true
 
 echo ""
@@ -33,4 +37,3 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "  다시 시작하려면: ${GREEN}./start.sh${NC}"
 echo ""
-
